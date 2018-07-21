@@ -121,7 +121,8 @@ def analyze_text(text):
 @click.command()
 @click.option("-f", "--filename", help="Source file with text")
 def main(filename):
-    with open(filename, encoding='utf-8') as file:
+    encoding = "windows-1251"
+    with open(filename, encoding=encoding) as file:
         analyze_text(file.read())
 
 
