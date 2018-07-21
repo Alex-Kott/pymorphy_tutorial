@@ -82,10 +82,9 @@ def get_header():
     return header
 
 
-def save_to_csv(data):
+def save_to_csv(data, encoding="utf-8"):
     csv_file_name = "data.csv"
     header = get_header()
-    encoding = "windows-1251"
 
     with open(csv_file_name, "w", encoding=encoding, newline='') as file:
         writer = csv.writer(file, delimiter=';')
@@ -101,7 +100,8 @@ def analyze_text(text):
     morph = pymorphy2.MorphAnalyzer()
 
     text_data = []
-    for word in words:
+    total = len(words)
+    for i, word in enumerate(words):
         info = {}
         parse = morph.parse(word)[0]
         info['word'] = word
@@ -113,17 +113,22 @@ def analyze_text(text):
         # print(info)
         # print(parse, end='\n\n')
 
+        print(f"{i}/{total}", end="\r", flush=True)
+
         text_data.append(info)
 
-    save_to_csv(text_data)
+    return text_data
 
 
 @click.command()
 @click.option("-f", "--filename", help="Source file with text")
-def main(filename):
-    encoding = "windows-1251"
-    with open(filename, encoding=encoding) as file:
-        analyze_text(file.read())
+@click.option("--source-encoding", default="utf-8", help="Source file with text")
+@click.option("--dest-encoding", default="utf-8", help="Source file with text")
+def main(filename, source_encoding, dest_encoding):
+    with open(filename, encoding=source_encoding) as file:
+        data = analyze_text(file.read())
+
+    save_to_csv(data, encoding=dest_encoding)
 
 
 if __name__ == "__main__":
