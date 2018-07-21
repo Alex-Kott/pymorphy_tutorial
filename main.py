@@ -38,7 +38,7 @@ def get_pos(parse):
         "INTJ": "междометие"
     }
 
-    return parts_of_speech[parse.tag.POS]
+    return parts_of_speech.get(parse.tag.POS, "неизв")
 
 
 def get_number(number):
@@ -85,12 +85,13 @@ def get_header():
 def save_to_csv(data):
     csv_file_name = "data.csv"
     header = get_header()
+    encoding = "windows-1251"
 
-    with open(csv_file_name, "w", encoding='utf-8', newline='') as file:
+    with open(csv_file_name, "w", encoding=encoding, newline='') as file:
         writer = csv.writer(file, delimiter=';')
         writer.writerow([v for k, v in header.items()])
 
-    with open(csv_file_name, "a", encoding='utf-8', newline='') as file:
+    with open(csv_file_name, "a", encoding=encoding, newline='') as file:
         dict_writer = csv.DictWriter(file, header, delimiter=';')
         dict_writer.writerows(data)
 
